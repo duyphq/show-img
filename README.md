@@ -1,4 +1,4 @@
-# Singple Wedding Invitation Landing Page 
+# Simple Wedding Invitation Landing Page
 
 
 # Section/Feature
@@ -7,7 +7,7 @@
 - Time and Place Info
 - Add to Calendar Button (Google Calendar)
 - Map Direction Button (Google Map)
-- Send Message Button (Whatssapp API)
+- Send Message Button (WhatsApp API)
 
 # Stack
 - Netlify (https://netlify.com)
