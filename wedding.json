@@ -1,0 +1,39 @@
+{
+  "groom": {
+    "fullName": "Phạm Huỳnh Quốc Duy",
+    "firstName": "Duy",
+    "instagram": "",
+    "whatsapp": ""
+  },
+  "bride": {
+    "fullName": "Châu Thị Hồng Phúc",
+    "firstName": "Phúc",
+    "instagram": "",
+    "whatsapp": ""
+  },
+  "wedding": {
+    "date": "2026-11-28",
+    "dateDisplay": "28 Tháng 11 2026",
+    "dayOfWeek": "Thứ Bảy",
+    "time": "18:00",
+    "timeDisplay": "18:00",
+    "countdownDatetime": "11/28/2026 18:00:00",
+    "venue": {
+      "name": "Nhà Hàng SESAN",
+      "address": "333 Đại lộ Bình Dương, Phường, Thủ Dầu Một, Hồ Chí Minh, Vietnam",
+      "googleMapsEmbedUrl": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d16074.911993975029!2d106.6576648!3d10.9837539!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d1ca7d11eb93%3A0x990e182f0f892e2d!2sSesan%20Restaurant!5e1!3m2!1sen!2s!4v1789999602534!5m2!1sen!2s",
+      "googleMapsDirectionsUrl": "https://maps.app.goo.gl/qHvENENdppwxekd38"
+    },
+    "googleCalendarUrl": ""
+  },
+  "parents": {
+    "groomFather": "",
+    "groomMother": "",
+    "brideFather": "",
+    "brideMother": ""
+  },
+  "rsvp": {
+    "groomWhatsapp": "",
+    "brideWhatsapp": ""
+  }
+}
