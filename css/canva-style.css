@@ -254,3 +254,5 @@ a { color: inherit; }
 .env-heart-text .script { font-size: clamp(1.5rem, 4.4vw, 2.2rem); line-height: 1.05; }
 .deco-poppies { height: auto; object-fit: contain; }
 .deco-poppies { bottom: -2px; display: block; }
+/* push the bouquet below the edge so every stem looks rooted in the band below */
+.deco-poppies { bottom: 0; transform: translateY(9%); }
