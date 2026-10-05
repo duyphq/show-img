@@ -253,3 +253,4 @@ a { color: inherit; }
 .env-heart-text { inset: 24% 24% auto; }
 .env-heart-text .script { font-size: clamp(1.5rem, 4.4vw, 2.2rem); line-height: 1.05; }
 .deco-poppies { height: auto; object-fit: contain; }
+.deco-poppies { bottom: -2px; display: block; }
