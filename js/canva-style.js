@@ -16,9 +16,17 @@
   tick();
   setInterval(tick, 1000);
 
-  // ── Hanging vines: strands of different lengths, swaying out of step ──
+  // ── Hanging vines ──
+  // The RSVP section has the supplied vine artwork inlined in index.html (static);
+  // every other .vines box gets the drawn, swaying strands.
+  var boxes = document.querySelectorAll(".vines");
+  var otherBoxes = Array.prototype.filter.call(boxes, function (b) { return !b.classList.contains("vines--art") && !b.classList.contains("vines--static"); });
+  drawStrands();
+
+  function drawStrands() {
   var lengths = [0.62, 0.32, 0.9, 0.28, 0.55, 0.78, 0.4];
-  document.querySelectorAll(".vines").forEach(function (box) {
+  otherBoxes.forEach(function (box) {
+    if (box.childElementCount) return;
     lengths.forEach(function (len, i) {
       var NS = "http://www.w3.org/2000/svg";
       var svg = document.createElementNS(NS, "svg");
@@ -30,6 +38,7 @@
       box.appendChild(svg);
     });
   });
+  }
 
   // ── Reveal on scroll ──
   var items = document.querySelectorAll(".reveal");

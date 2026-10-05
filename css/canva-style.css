@@ -256,3 +256,51 @@ a { color: inherit; }
 .deco-poppies { bottom: -2px; display: block; }
 /* push the bouquet below the edge so every stem looks rooted in the band below */
 .deco-poppies { bottom: 0; transform: translateY(9%); }
+
+/* Invitation paragraph — same type as the source: Cormorant Garamond italic 400,
+   28px / 32px at desktop, colour rgb(54, 42, 28), one empty line between paragraphs */
+.invite-text {
+  max-width: 740px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.15rem, 1.95vw, 1.75rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.143;
+  color: rgb(54, 42, 28);
+  font-kerning: normal;
+}
+.invite-text p + p { margin-top: 1.143em; }
+.invite-sign { color: rgb(54, 42, 28); }
+.hero-kicker { letter-spacing: 0.126em; }
+
+/* supplied vine artwork (RSVP only): static curtain of strands hanging from the top edge */
+.vines--art { top: 0; left: 0; }
+.vines .vines-art { display: block; width: clamp(254px, 34vw, 445px); height: auto; animation: none; transform: none; }
+@media (max-width: 760px) { .vines .vines-art { width: 180px; } }
+
+
+/* Memory + venue sections: smaller, sparser copy of the same vine artwork (static) */
+.vines svg.vines-few { display: block; width: clamp(130px, 15vw, 200px); height: auto; fill: rgb(101, 95, 50); animation: none; }
+.vines--light svg.vines-few { fill: #D9CFA9; }
+.vines--right svg.vines-few { transform: scaleX(-1); }
+@media (max-width: 760px) { .vines svg.vines-few { width: 100px; } }
+
+/* Memory lane: misty forest photo background, mist on top fading into forest below */
+.memory {
+  background-color: #E9E5D8;
+  background-image:
+    linear-gradient(180deg, rgba(236, 232, 217, 0.55) 0%, rgba(236, 232, 217, 0.15) 55%, rgba(30, 40, 20, 0.15) 100%),
+    url("../image/thiep/nen-ky-niem.jpg");
+  background-size: cover;
+  background-position: center bottom;
+}
+/* keep the timeline captions readable over the darker forest */
+.memory .tl-text { justify-self: center; padding: 8px 14px; border-radius: 6px; background: rgba(239, 235, 226, 0.82); }
+.memory .timeline::before { border-left-color: rgba(239, 235, 226, 0.7); }
+.memory .timeline li::before { background: #EFEBE2; box-shadow: 0 0 0 2px rgba(44, 36, 28, 0.6); }
+
+/* Hero: looping background video (photo stays as poster / fallback) */
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.hero-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgba(40, 36, 20, 0.32), rgba(40, 36, 20, 0.42)); }
+.hero > .nav, .hero > .hero-center, .hero > .hero-date, .hero > .hero-place { z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .hero-video { display: none; } }
