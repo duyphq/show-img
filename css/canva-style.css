@@ -1,13 +1,18 @@
-/* thiep-canva.html — earthy editorial wedding site (cream / espresso / olive) */
+/* index.html — editorial wedding site: cream paper, plum #572932 (primary) + olive #666B54 (secondary) */
 :root {
   --cream: #EDE6DB;
   --paper: #EFEBE5;
-  --espresso: #45372A;
-  --espresso-2: #372A1E;
-  --olive: #675E32;
+  --plum: #572932;
+  --plum-deep: #47212A;
+  --espresso: var(--plum);
+  --espresso-2: var(--plum-deep);
+  --olive: #666B54;
   --sage: #BFC2A0;
   --sage-2: #A9AD86;
-  --ink: #2C241C;
+  --ink: #3A2327;
+  --muted: #666B54;
+  --plum-rgb: 87, 41, 50;
+  --olive-rgb: 102, 107, 84;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -266,11 +271,11 @@ a { color: inherit; }
   font-weight: 400;
   font-style: italic;
   line-height: 1.143;
-  color: rgb(54, 42, 28);
+  color: var(--ink);
   font-kerning: normal;
 }
 .invite-text p + p { margin-top: 1.143em; }
-.invite-sign { color: rgb(54, 42, 28); }
+.invite-sign { color: var(--plum); }
 .hero-kicker { letter-spacing: 0.126em; }
 
 /* supplied vine artwork (RSVP only): static curtain of strands hanging from the top edge */
@@ -304,3 +309,218 @@ a { color: inherit; }
 .hero-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgba(40, 36, 20, 0.32), rgba(40, 36, 20, 0.42)); }
 .hero > .nav, .hero > .hero-center, .hero > .hero-date, .hero > .hero-place { z-index: 2; }
 @media (prefers-reduced-motion: reduce) { .hero-video { display: none; } }
+
+/* ── Memory album: 3D coverflow ring (same geometry/timing as the reference) ── */
+.coverflow { position: relative; z-index: 1; max-width: 600px; margin: 34px auto 0; }
+.coverflow-stage { position: relative; height: 520px; touch-action: pan-y; }
+.coverflow-ring { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+.coverflow-slide {
+  position: absolute;
+  height: 92%;
+  aspect-ratio: 2 / 3;
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 20px 25px -5px rgba(20, 20, 10, 0.25), 0 8px 10px -6px rgba(20, 20, 10, 0.2);
+  transition: transform 1100ms ease-in-out, opacity 1100ms ease-in-out;
+  will-change: transform, opacity;
+}
+.coverflow-slide.is-active { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3), 0 20px 25px -5px rgba(20, 20, 10, 0.3); }
+.coverflow-slide img { width: 100%; height: 100%; object-fit: cover; }
+.coverflow-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 200;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(239, 235, 226, 0.6);
+  color: var(--ink);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 0.2s;
+}
+.coverflow-nav:hover { background: rgba(239, 235, 226, 1); }
+.coverflow-nav svg { width: 16px; height: 16px; }
+.coverflow-nav--prev { left: 0; }
+.coverflow-nav--next { right: 0; }
+.coverflow-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; color: var(--ink); }
+.coverflow-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: currentColor; opacity: 0.25; cursor: pointer; transition: width 0.3s, opacity 0.3s; }
+.coverflow-dots button:hover { opacity: 0.4; }
+.coverflow-dots button.is-active { width: 24px; opacity: 0.7; }
+.coverflow-caption { width: fit-content; max-width: 90%; margin: 18px auto 0; padding: 10px 20px 12px; border-radius: 8px; background: rgba(239, 235, 226, 0.82); text-align: center; }
+.coverflow-title { font-family: 'Pinyon Script', cursive; font-size: 1.9rem; line-height: 1.1; }
+.coverflow-text { margin-top: 2px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 1rem; }
+@media (max-width: 760px) {
+  .coverflow { max-width: 380px; }
+  .coverflow-stage { height: 340px; }
+  .coverflow-nav { display: none; }
+}
+.memory .coverflow-dots { color: #EFEBE2; }
+.memory .coverflow-dots button { opacity: 0.45; }
+.memory .coverflow-dots button.is-active { opacity: 0.95; }
+
+/* auto-rotate on/off */
+.coverflow-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px auto 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(239, 235, 226, 0.7);
+  border-radius: 999px;
+  background: rgba(239, 235, 226, 0.18);
+  color: #EFEBE2;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.coverflow-toggle:hover { background: rgba(239, 235, 226, 0.32); }
+.coverflow-toggle svg { width: 14px; height: 14px; }
+.coverflow-toggle .i-play { display: none; }
+.coverflow-toggle:not(.is-playing) .i-play { display: block; }
+.coverflow-toggle:not(.is-playing) .i-pause { display: none; }
+
+/* Memory album: paper texture instead of the forest photo (tinted cream via multiply) */
+.memory {
+  background-color: #ECE8D9;
+  background-image: url("../image/thiep/giay-album.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: multiply;
+}
+/* back to dark controls on the light paper */
+.memory .coverflow-dots { color: var(--ink); }
+.memory .coverflow-dots button { opacity: 0.25; }
+.memory .coverflow-dots button.is-active { opacity: 0.7; }
+.memory .coverflow-toggle { color: var(--ink); border-color: rgba(44, 36, 28, 0.45); background: rgba(44, 36, 28, 0.04); }
+.memory .coverflow-toggle:hover { background: rgba(44, 36, 28, 0.1); }
+.memory .coverflow-caption { background: transparent; }
+
+/* faded castle sketch printed into the paper, behind the album */
+.memory { isolation: isolate; }
+.memory::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("../image/thiep/lau-dai.webp") center 62% / min(1100px, 120%) auto no-repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+  pointer-events: none;
+}
+.memory > h2 { position: relative; }
+@media (max-width: 760px) { .memory::before { background-size: 170% auto; background-position: center 55%; } }
+
+
+/* ══ Palette pass: two tones — plum #572932 + olive #666B54 ══════════════ */
+/* headings & script lines carry the plum */
+.script, .invite > .script:first-child, .invite-sign, .coverflow-title, .env-heart-text .script,
+.faq-title { color: var(--plum); }
+.countdown-band .script, .dark-band .script { color: var(--cream); }
+/* body copy: plum-tinted ink; secondary copy: olive */
+.invite-text, .story-text { color: var(--ink); }
+.coverflow-text, .env-by, .rsvp-links, .faq-item p { color: var(--ink); }
+.faq-item h3 span, .tl-text { color: var(--muted); }
+.faq-title { color: var(--olive); }
+/* rules, borders, dots */
+.faq { border-color: var(--olive); }
+.faq-item { border-bottom-color: rgba(var(--olive-rgb), 0.55); }
+.coverflow-dots, .memory .coverflow-dots { color: var(--plum); }
+.memory .coverflow-toggle { color: var(--plum); border-color: rgba(var(--plum-rgb), 0.45); background: rgba(var(--plum-rgb), 0.04); }
+.memory .coverflow-toggle:hover { background: rgba(var(--plum-rgb), 0.1); }
+.coverflow-nav { color: var(--plum); }
+/* buttons */
+.btn-outline { color: var(--plum); }
+.btn-outline:hover { background: var(--plum); color: var(--cream); border-color: var(--plum); }
+.btn-outline--light { color: var(--cream); }
+.btn-outline--light:hover { background: var(--cream); color: var(--plum); }
+.btn-outline:active { transform: translateY(1px); }
+.env-btn { color: var(--plum); border-color: rgba(var(--plum-rgb), 0.7); }
+.faq-more, .rsvp-links a { color: var(--plum); }
+/* vines in the secondary olive; on plum bands a warm cream */
+.vines { color: var(--olive); }
+.vines--art svg { fill: var(--olive) !important; }
+.vines svg.vines-few { fill: var(--olive); }
+.vines--light, .vines--light svg.vines-few { color: #E8D8CF; fill: #E8D8CF; }
+/* plum-tinted overlays & shadows (one light source, from above) */
+.hero-shade { background: linear-gradient(rgba(var(--plum-rgb), 0.28), rgba(40, 18, 24, 0.45)); }
+.footer { background: linear-gradient(rgba(40, 36, 28, 0.45), rgba(40, 36, 28, 0.58)), url("../preWedding/garden.jpg") center / cover no-repeat; }
+.coverflow-slide { box-shadow: 0 20px 25px -5px rgba(var(--plum-rgb), 0.22), 0 8px 10px -6px rgba(var(--plum-rgb), 0.18); }
+.coverflow-slide.is-active { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35), 0 22px 28px -6px rgba(var(--plum-rgb), 0.3); }
+.story { box-shadow: inset 0 18px 22px -18px rgba(var(--plum-rgb), 0.2); }
+.map { border-color: rgba(232, 216, 207, 0.4); }
+:focus-visible { outline-color: var(--plum); }
+.nav a.is-active { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 1px; }
+
+
+/* ── Guestbook (Sổ lưu bút) — layout of the reference: paper note, centred title,
+   outlined fields, plum pill button ── */
+.guestbook { position: relative; overflow-x: clip; padding: 0 24px 120px; background: var(--cream); }
+.gb-paper {
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  width: 120%;
+  max-width: 650px;
+  transform: translateX(-50%);
+  object-fit: contain;
+  opacity: 0.95;
+  filter: drop-shadow(4px 4px 4px rgba(var(--plum-rgb), 0.22));
+  pointer-events: none;
+}
+.gb { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; padding-top: 120px; color: var(--plum); }
+.gb-heading { text-align: center; font-family: 'Times New Roman', 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.5rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--plum); }
+.gb-form { max-width: 380px; margin: 26px auto 0; padding: 16px; }
+.gb-form input, .gb-form textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--plum);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--plum);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.875rem;
+  resize: none;
+  transition: box-shadow 0.2s;
+}
+.gb-form input { margin-bottom: 16px; }
+.gb-form textarea { height: 110px; }
+.gb-form ::placeholder { color: rgba(var(--plum-rgb), 0.6); }
+.gb-form input:focus, .gb-form textarea:focus { outline: none; box-shadow: 0 0 0 3px rgba(var(--plum-rgb), 0.14); }
+.gb-form [aria-invalid] { box-shadow: 0 0 0 2px rgba(var(--plum-rgb), 0.35); }
+.gb-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.gb-submit {
+  margin-left: auto;
+  padding: 8px 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--plum);
+  color: #DED9D7;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.gb-submit:hover { transform: scale(1.05); }
+.gb-submit:active { transform: scale(0.98); }
+.gb-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.gb-status { font-family: 'Be Vietnam Pro', sans-serif; font-size: 0.75rem; color: var(--muted); }
+.gb-status[data-kind="error"] { color: var(--plum); }
+@media (max-width: 760px) {
+  .gb { padding-top: 74px; }
+  .gb-form { max-width: 280px; }
+  .gb-form textarea { height: 56px; }
+}
+

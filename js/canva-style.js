@@ -68,3 +68,85 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 })();
+
+// ── Memory album: 3D coverflow ring ──
+// Same geometry and timing as the reference: each slide sits at offset d from the
+// active one → translateX(60d%) translateZ(-150|d|px) rotateY(45d deg), scale and
+// opacity shrinking with |d|; autoplay every 1.4s while visible (toggle button turns it
+// on/off), paused for 6s after any manual move, swipe on touch.
+(function () {
+  var root = document.getElementById("coverflow");
+  if (!root) return;
+  var slides = Array.prototype.slice.call(root.querySelectorAll(".coverflow-slide"));
+  var dots = Array.prototype.slice.call(root.querySelectorAll(".coverflow-dots button"));
+  var title = root.querySelector(".coverflow-title");
+  var text = root.querySelector(".coverflow-text");
+  var n = slides.length, current = 0, autoplay = true, holding = false, visible = false, timer = null, holdTimer = null;
+  var toggle = root.querySelector(".coverflow-toggle");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function offset(i) {
+    var d = (i - current + n) % n;
+    if (d > n / 2) d -= n;
+    return d;
+  }
+
+  function render() {
+    slides.forEach(function (el, i) {
+      var d = offset(i), a = Math.abs(d);
+      el.style.transform = "translateX(" + 60 * d + "%) translateZ(" + -150 * a + "px) rotateY(" + 45 * d + "deg) scale(" + Math.max(0.7, 1 - 0.15 * a) + ")";
+      el.style.opacity = Math.max(0.3, 1 - 0.25 * a);
+      el.style.zIndex = 100 - a;
+      el.classList.toggle("is-active", d === 0);
+    });
+    dots.forEach(function (b, i) { b.classList.toggle("is-active", i === current); });
+    title.textContent = slides[current].dataset.title;
+    text.textContent = slides[current].dataset.text;
+  }
+
+  function go(i) { current = (i + n) % n; render(); }
+  function hold() {
+    holding = true;
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(function () { holding = false; schedule(); }, 6000);
+    schedule();
+  }
+  function schedule() {
+    clearInterval(timer);
+    if (n > 1 && autoplay && visible && !holding && !reduce.matches) timer = setInterval(function () { go(current + 1); }, 1400);
+  }
+
+  slides.forEach(function (el, i) { el.addEventListener("click", function () { if (i !== current) { go(i); hold(); } }); });
+  dots.forEach(function (b, i) { b.addEventListener("click", function () { go(i); hold(); }); });
+  root.querySelector(".coverflow-nav--prev").addEventListener("click", function () { go(current - 1); hold(); });
+  root.querySelector(".coverflow-nav--next").addEventListener("click", function () { go(current + 1); hold(); });
+  // auto-rotate keeps running under the mouse; this button switches it on/off
+  toggle.addEventListener("click", function () {
+    autoplay = !autoplay;
+    holding = false;
+    clearTimeout(holdTimer);
+    toggle.classList.toggle("is-playing", autoplay);
+    toggle.setAttribute("aria-pressed", String(autoplay));
+    toggle.setAttribute("aria-label", autoplay ? "Tắt tự xoay" : "Bật tự xoay");
+    if (autoplay) go(current + 1);
+    schedule();
+  });
+
+  var start = null;
+  var stage = root.querySelector(".coverflow-stage");
+  stage.addEventListener("touchstart", function (e) { start = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
+  stage.addEventListener("touchend", function (e) {
+    if (!start) return;
+    var dx = e.changedTouches[0].clientX - start.x, dy = Math.abs(e.changedTouches[0].clientY - start.y);
+    start = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) { go(current + (dx < 0 ? 1 : -1)); hold(); }
+  });
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; schedule(); }, { rootMargin: "300px 0px" }).observe(root);
+  } else { visible = true; }
+  if (reduce.addEventListener) reduce.addEventListener("change", schedule);
+
+  render();
+  schedule();
+})();
