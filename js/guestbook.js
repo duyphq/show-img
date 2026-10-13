@@ -12,6 +12,10 @@
   // legacy anon keys are JWTs and also go in Authorization; new sb_publishable_ keys must not
   if (KEY.indexOf("sb_") !== 0) headers.Authorization = "Bearer " + KEY;
 
+  var count = document.getElementById("gbCount");
+  function updateCount() { if (count) count.textContent = form.elements.message.value.length + "/500"; }
+  form.elements.message.addEventListener("input", updateCount);
+
   function setStatus(text, kind) {
     status.textContent = text;
     status.dataset.kind = kind || "";
@@ -27,6 +31,7 @@
     e.preventDefault();
     var nameField = form.elements.name, messageField = form.elements.message;
     var name = nameField.value.trim();
+    var pick = form.querySelector('input[name="attending"]:checked');
     var message = messageField.value.trim();
     nameField.toggleAttribute("aria-invalid", !name);
     messageField.toggleAttribute("aria-invalid", !message);
@@ -35,13 +40,15 @@
       (name ? messageField : nameField).focus();
       return;
     }
+    if (!pick) { setStatus("Quý vị chọn có tham dự hay không giúp chúng mình nhé.", "error"); return; }
     submit.disabled = true;
     setStatus("Đang gửi…", "");
-    fetch(URL_ + "/rest/v1/guestbook", { method: "POST", headers: headers, body: JSON.stringify({ name: name, message: message }) })
+    fetch(URL_ + "/rest/v1/guestbook", { method: "POST", headers: headers, body: JSON.stringify({ name: name, message: message, attending: pick.value === "yes" }) })
       .then(function (r) { if (!r.ok) throw r; })
       .then(function () {
         form.reset();
-        setStatus("Cảm ơn bạn. Lời chúc đã được gửi tới cô dâu chú rể.", "ok");
+        updateCount();
+        setStatus(pick.value === "yes" ? "Cảm ơn quý vị. Hẹn gặp quý vị trong ngày vui." : "Cảm ơn quý vị đã gửi lời chúc. Chúng mình rất tiếc vì không được gặp quý vị.", "ok");
       })
       .catch(function () { setStatus("Gửi chưa được. Bạn thử lại sau ít phút nhé.", "error"); })
       .then(function () { submit.disabled = false; });

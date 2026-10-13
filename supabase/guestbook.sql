@@ -14,3 +14,6 @@ drop policy if exists "guestbook read" on public.guestbook;
 
 create policy "guestbook insert" on public.guestbook
   for insert to anon with check (true);
+
+-- Attendance answer sent together with the wish (true = sẽ đến, false = không đến).
+alter table public.guestbook add column if not exists attending boolean;
